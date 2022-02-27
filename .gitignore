@@ -1,0 +1,8 @@
+.history/
+.DS_Store
+.idea/
+
+server/.env
+server/node_modules
+client/node_modules
+client/.env
