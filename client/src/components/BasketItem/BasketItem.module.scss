@@ -1,0 +1,35 @@
+.basketDevice {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20px;
+  white-space: nowrap;
+
+  &__img {
+    height: 200px;
+    width: 200px;
+    cursor: pointer;
+    margin-right: 20px;
+  }
+
+  &__name {
+    font-weight: 400;
+    font-size: 24px;
+    padding: 20px;
+  }
+
+  &__price {
+    color: teal;
+    font-size: 28px;
+    padding: 20px;
+  }
+
+  &__delete {
+    margin: 10px 10px 10px auto;
+    height: 40px;
+
+  }
+
+  &__amount {
+
+  }
+}
