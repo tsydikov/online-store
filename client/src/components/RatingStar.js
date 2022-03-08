@@ -47,7 +47,7 @@ const RatingStar = observer(({deviceId}) => {
               ?
               <div
                 className="d-flex align-items-center"
-                style={{fontSize: "18px", cursor: "pointer"}}
+                style={{fontSize: "18px", cursor: "pointer", position:'absolute', left: '100px', bottom: '5px'}}
               >
                 {rating.ratings.map(rate =>
                   rate.id === rating.selectedRating.id

@@ -1,11 +1,22 @@
-const {BasketDevice, Basket} = require("../models/models");
+const {BasketDevice} = require("../models/models");
 const ApiError = require("../error/ApiError");
 
 class BasketController {
-    async create(req, res) {
+    async create(req, res,next) {
         const {id, userId} = req.body;
-        const basketDevice = await BasketDevice.create({deviceId: id, basketId: userId});
-        return res.json(basketDevice);
+        try {
+            const deviceInBasket = await BasketDevice.findOne({
+                where : {
+                    deviceId: id,
+                    basketId: userId,
+                }
+            })
+            if (deviceInBasket) return next(ApiError.badRequest('device already in basket'))
+            const basketDevice = await BasketDevice.create({deviceId: id, basketId: userId});
+            return res.json(basketDevice);
+        } catch (e) {
+            next(ApiError.internal(e.message))
+        }
     }
 
     async getAll(req, res) {
@@ -13,15 +24,19 @@ class BasketController {
         return res.json(basket);
     }
 
-    async delete(req, res) {
-        const {id} = req.params;
-        const basketItem = await BasketDevice.destroy({
-            where: {
-                basketId: id.split('&')[1],
-                deviceId: id.split('&')[0]
-            }
-        });
-        return res.json(basketItem);
+    async delete(req, res, next) {
+        const { basketId, deviceId } = req.query;
+        try {
+            const basketItem = await BasketDevice.destroy({
+                where: {
+                    basketId,
+                    deviceId,
+                }
+            });
+            return res.json(basketItem);
+        } catch (e) {
+            next(ApiError.badRequest(e.message))
+        }
     }
 }
 

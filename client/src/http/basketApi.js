@@ -5,7 +5,7 @@ export const putDeviceToBasket = async (basketDevice) => {
     return data;
 };
 export const deleteDeviceFromBasket = async (deviceId,basketId) => {
-    const {data} = await $authHost.delete(`api/basket/${deviceId}&${basketId}`);
+    const {data} = await $authHost.delete(`api/basket?deviceId=${deviceId}&basketId=${basketId}`);
     return data;
 };
 export const fetchBasket = async () => {

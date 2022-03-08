@@ -17,6 +17,7 @@ const DevicePage = () => {
   const PutDeviceInToBasket = () => {
     putDeviceToBasket({id: device.id, userId: user.user.id})
       .then(() => alert(`device added to the basket`))
+      .catch(() => alert('device already in basket'))
   }
   return (
     <Container className="mt-3">
