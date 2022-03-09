@@ -1,0 +1,19 @@
+.sum {
+  padding: 20px;
+
+  &__header {
+    font-weight: 400;
+    font-size: 28px;
+  }
+
+  &__price {
+    font-weight: 400;
+    font-size: 28px;
+    color: teal;
+  }
+
+  &__button {
+    display: flex;
+    justify-content: center;
+  }
+}

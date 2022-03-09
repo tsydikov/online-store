@@ -1,8 +1,8 @@
 import React from 'react';
 import {Button, Card, Col, Image} from 'react-bootstrap';
 import {useHistory} from 'react-router-dom';
-import {REACT_APP_API_URL} from '../../http/api';
-import {DEVICE_ROUTE} from '../../utils/constants';
+import {REACT_APP_API_URL} from '../../../../http/api';
+import {DEVICE_ROUTE} from '../../../../utils/constants';
 import * as styles from './BasketItem.module.scss'
 import Row from 'react-bootstrap/Row';
 import Amount from './components/Amount';
@@ -20,7 +20,7 @@ const BasketItem = ({device, deleteItem, setBasketDevice}) => {
     setBasketDevice(device)
   }
   return (
-    <Col md={8}>
+    <Col>
       <Card border="black" className={styles.basketDevice}>
         <Image
           className={styles.basketDevice__img}

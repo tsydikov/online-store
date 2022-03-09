@@ -1,5 +1,6 @@
 import {Button, Row, Col} from 'react-bootstrap';
 import {observer} from 'mobx-react-lite';
+import * as styles from '../BasketItem.module.scss'
 
 const Amount = ({amount, setBasketDeviceAmount}) => {
   const increase = () => setBasketDeviceAmount(1)
@@ -9,17 +10,19 @@ const Amount = ({amount, setBasketDeviceAmount}) => {
         <Col>
           <Button
             variant="outline-dark"
-            onClick={increase}
-          >
-          +
-        </Button></Col>
-        <Col style={{fontSize: 24}}>{amount}</Col>
-        <Col>
-          <Button
-            variant="outline-dark"
             onClick={decrease}
           >
           -
+        </Button></Col>
+        <Col className={styles.basketDevice__amount}>
+          {amount}
+        </Col>
+        <Col>
+          <Button
+            variant="outline-dark"
+            onClick={increase}
+          >
+          +
         </Button></Col>
       </Row>
   )
