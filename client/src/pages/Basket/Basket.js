@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Context} from '../../index';
 import {Col, Row} from 'react-bootstrap';
 import {observer} from 'mobx-react-lite';
-import {deleteDeviceFromBasket} from '../../http/basketApi';
+import {deleteDeviceFromBasket, sendEmail} from '../../http/basketApi';
 import BasketItem from './components/BasketItem/BasketItem';
 import Summary from './components/Summary/Summary';
 import {cleanBasket, fetchBasketDevice, getDevicesInfo, initialState} from './Busket.model';
@@ -38,6 +38,7 @@ const Basket = observer(() => {
     result.amount = amount
     result.userId = user.user.id
     result.devices = getDevicesInfo(device)
+    await sendEmail(result)
     console.log(result)
     await cleanBasket(setState, device, user.user.id)
   }
