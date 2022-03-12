@@ -1,9 +1,21 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Button, Card, Col, Form, Modal, Row} from 'react-bootstrap';
 import * as styles from './Summary.module.scss';
 import {observer} from 'mobx-react-lite';
 
 const Summary = ({ amount, state, setState, confirm}) => {
+  const [makeOrder, setMakeOrder] = useState(false)
+  const confirmOrder = (e) => {
+    e.preventDefault()
+    setMakeOrder(() => true)
+    let error = false
+    for (let key in state) {
+      if (!state[key]) {
+        error = true
+      }
+    }
+    if (!error) confirm(e)
+  }
   return (
     <Card border="black" className={styles.sum}>
       <Form>
@@ -20,6 +32,7 @@ const Summary = ({ amount, state, setState, confirm}) => {
             onChange={e => setState({...state, surname: e.target.value})}
             type="text"
             placeholder="Введите фамилию"
+            isInvalid={makeOrder && !state.surname}
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicName">
@@ -29,6 +42,7 @@ const Summary = ({ amount, state, setState, confirm}) => {
             onChange={e => setState({...state, name: e.target.value})}
             type="text"
             placeholder="Введите имя"
+            isInvalid={makeOrder && !state.name}
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicCity">
@@ -38,6 +52,7 @@ const Summary = ({ amount, state, setState, confirm}) => {
             onChange={e => setState({...state, city: e.target.value})}
             type="text"
             placeholder="Введите город для доставки"
+            isInvalid={makeOrder && !state.city}
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicNumber">
@@ -47,6 +62,7 @@ const Summary = ({ amount, state, setState, confirm}) => {
             onChange={e => setState({...state, number: e.target.value})}
             type="text"
             placeholder="Введите номер отделения"
+            isInvalid={makeOrder && !state.number}
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicPhoneNumber">
@@ -56,6 +72,7 @@ const Summary = ({ amount, state, setState, confirm}) => {
             onChange={e => setState({...state, phone: e.target.value})}
             type="email"
             placeholder="Введите номер телефона"
+            isInvalid={makeOrder && !state.phone}
           />
           <Form.Text className="text-muted">
             Мы перезвоним вам для подтверджения заказа.
@@ -70,7 +87,7 @@ const Summary = ({ amount, state, setState, confirm}) => {
             <Button
               variant="outline-dark"
               type="submit"
-              onClick={e => confirm(e)}
+              onClick={confirmOrder}
             >
               Подтвердить заявку
             </Button>
