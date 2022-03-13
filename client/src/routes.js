@@ -1,8 +1,8 @@
-import Admin from "./pages/Admin"
-import Auth from "./pages/Auth"
+import Admin from "./pages/AdminPage/Admin"
+import Auth from "./pages/Authorization/Auth"
 import Basket from "./pages/Basket/Basket"
-import DevicePage from "./pages/DevicePage"
-import Shop from "./pages/Shop"
+import DevicePage from "./pages/DevicePage/DevicePage"
+import Shop from "./pages/MainPage/Shop"
 import {ADMIN_ROUTE, BASKET_ROUTE, DEVICE_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE} from "./utils/constants"
 
 export const authRoutes = [

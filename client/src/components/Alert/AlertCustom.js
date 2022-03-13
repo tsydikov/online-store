@@ -15,7 +15,7 @@ const AlertCustom = ({ show, setShow, headerText, bodyText, variant }) => {
       </p>
       <hr />
       <div className="d-flex justify-content-end">
-        <Button onClick={() => setShow(false)} variant="outline-success">
+        <Button onClick={() => setShow(false)} variant={`outline-${variant}`}>
           Закрыть
         </Button>
       </div>
