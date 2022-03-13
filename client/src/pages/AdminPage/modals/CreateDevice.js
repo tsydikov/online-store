@@ -39,8 +39,10 @@ const CreateDevice = observer(({show, onHide}) => {
     formData.append('brandId', device.selectedBrand.id)
     formData.append('typeId', device.selectedType.id)
     formData.append('info', JSON.stringify(info))
-    console.log(formData)
     await createDevice(formData)
+    setName(() => '')
+    setPrice(() => 0)
+    setInfo(() => [])
     onHide()
   }
 
