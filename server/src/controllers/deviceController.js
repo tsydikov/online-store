@@ -68,8 +68,10 @@ class DeviceController {
   async delete(req, res, next) {
     const {id} = req.params;
     try {
-      const device = await DeviceService.delete({id});
-      return res.json(device);
+      const device = await DeviceService.getOne({id})
+      await FileService.deleteFile(device.img)
+      const deletedDevice = await DeviceService.delete({id});
+      return res.json(deletedDevice);
     } catch (e) {
       next(ApiError.badRequest(e.message))
     }
