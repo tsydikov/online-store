@@ -1,6 +1,13 @@
+.imgContainer {
+  cursor: pointer;
+}
+
 .img {
   height: 200px;
   cursor: pointer;
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
 }
 
 .price {
