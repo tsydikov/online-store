@@ -1,31 +1,16 @@
 const ApiError = require('../error/ApiError')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-const {User, Basket} = require('../models/models')
-
-const generateJwt = (id, email, role) => {
-  return jwt.sign(
-    {id, email, role,},
-    process.env.SECRET_KEY,
-    {expiresIn: '24h'}
-  )
-}
+const TokenService = require('../service/token/token-service')
+const UserService = require('../service/user/user-service')
 
 class UserController {
   async registration(req, res, next) {
     const {email, password, role} = req.body
+    if (!email || !password) {
+      return next(ApiError.badRequest('Некорректный email или password'))
+    }
     try {
-      if (!email || !password) {
-        return next(ApiError.badRequest('Некорректный email или password'))
-      }
-      const candidate = await User.findOne({where: {email}})
-      if (candidate) {
-        return next(ApiError.badRequest('Пользователь с таким email уже существует'))
-      }
-      const hashPassword = await bcrypt.hash(password, 5)
-      const user = await User.create({email, role, password: hashPassword})
-      const basket = await Basket.create({userId: user.id})
-      const token = generateJwt(user.id, user.email, user.role)
+      const user = await UserService.registration({email, password, role})
+      const token = TokenService.generateJwt(user.id, user.email, user.role)
       return res.json({token})
     } catch (e) {
       next(ApiError.badRequest(e.message))
@@ -35,15 +20,8 @@ class UserController {
   async login(req, res, next) {
     const {email, password} = req.body
     try {
-      const user = await User.findOne({where: {email}})
-      if (!user) {
-        return next(ApiError.internal('Пользователь с таким именем не найден'))
-      }
-      let comparePassword = bcrypt.compareSync(password, user.password)
-      if (!comparePassword) {
-        return next(ApiError.internal('Указан неверный пароль'))
-      }
-      const token = generateJwt(user.id, user.email, user.role)
+      const user = await UserService.login({email, password})
+      const token = TokenService.generateJwt(user.id, user.email, user.role)
       return res.json({token})
     } catch (e) {
       next(ApiError.badRequest(e.message))
@@ -52,7 +30,7 @@ class UserController {
 
   async check(req, res, next) {
     try {
-      const token = generateJwt(req.user.id, req.user.email, req.user.role)
+      const token = TokenService.generateJwt(req.user.id, req.user.email, req.user.role)
       return res.json({token})
     } catch (e) {
       next(ApiError.badRequest(e.message))

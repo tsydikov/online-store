@@ -1,30 +1,14 @@
-const uuid = require('uuid')
-const path = require('path')
-const fs = require('fs')
-const {Device, DeviceInfo} = require('../models/models')
 const ApiError = require('../error/ApiError')
-const {Sequelize} = require("sequelize");
+const FileService = require('../service/file/file-service')
+const DeviceService = require('../service/device/device-service')
 
 class DeviceController {
   async create(req, res, next) {
+    let {name, price, brandId, typeId, info} = req.body
+    const {img} = req.files
     try {
-      let {name, price, brandId, typeId, info} = req.body
-      const {img} = req.files
-      let fileName = uuid.v4() + ".jpg"
-      await img.mv(path.resolve(__dirname, '../..', 'static', fileName))
-
-      const device = await Device.create({name, price, brandId, typeId, img: fileName})
-
-      if (info) {
-        info = JSON.parse(info)
-        info.forEach(i =>
-          DeviceInfo.create({
-            title: i.title,
-            description: i.description,
-            deviceId: device.id
-          })
-        )
-      }
+      const fileName = await FileService.putFile(img)
+      const device = await DeviceService.create({name, price, brandId, typeId, info, fileName})
       return res.json(device)
     } catch (e) {
       next(ApiError.badRequest(e.message))
@@ -32,49 +16,16 @@ class DeviceController {
   }
 
   async update(req, res, next) {
+    let {id, name, price, img, brandId, typeId, info} = req.body
     try {
-      let {id, name, price, img, brandId, typeId, info} = req.body
       let fileName
-      const editDevice = await Device.findOne(
-        {
-          where: {id: id},
-          include: [{model: DeviceInfo, as: 'info'}]
-        },
-      )
       if (img) {
         fileName = img
       } else {
         const {img} = req.files
-        fileName = uuid.v4() + ".jpg"
-        await img.mv(path.resolve(__dirname, '../..', 'static', fileName))
+        fileName = await FileService.putFile(img)
       }
-      await editDevice.update({
-        name: name,
-        price: price,
-        brandId: brandId,
-        typeId: typeId,
-        img: fileName,
-      })
-      if (info) {
-        info = JSON.parse(info)
-        for (const i of info) {
-          const infoOfDevice = await DeviceInfo.findOne({
-            where: {id: i.id}
-          })
-          if (infoOfDevice === null) {
-            await DeviceInfo.create({
-              title: i.title,
-              description: i.description,
-              deviceId: editDevice.id
-            })
-          } else {
-            await infoOfDevice.update({
-              title: i.title,
-              description: i.description,
-            })
-          }
-        }
-      }
+      await DeviceService.update({id, name, price, brandId, typeId, info, fileName})
       return res.status(200).send();
     } catch (e) {
       next(ApiError.badRequest(e.message))
@@ -83,38 +34,8 @@ class DeviceController {
 
   async getAll(req, res, next) {
     let {brandId, typeId, limit, page, search} = req.query
-    page = page || 1
-    limit = limit || 9
-    let offset = page * limit - limit
-    let devices;
     try {
-      if (search) {
-        devices = await Device.findAndCountAll({where: {name: {[Sequelize.Op.iLike]: `%${search}%`}}})
-      }
-      if (!brandId && !typeId) {
-        devices = await Device.findAndCountAll({where: {name: {[Sequelize.Op.iLike]: `%${search}%`}}, limit, offset})
-      }
-      if (brandId && !typeId) {
-        devices = await Device.findAndCountAll({
-          where: {brandId, name: {[Sequelize.Op.iLike]: `%${search}%`}},
-          limit,
-          offset
-        })
-      }
-      if (!brandId && typeId) {
-        devices = await Device.findAndCountAll({
-          where: {typeId, name: {[Sequelize.Op.iLike]: `%${search}%`}},
-          limit,
-          offset
-        })
-      }
-      if (brandId && typeId) {
-        devices = await Device.findAndCountAll({
-          where: {brandId, typeId, name: {[Sequelize.Op.iLike]: `%${search}%`}},
-          limit,
-          offset
-        })
-      }
+      const devices = await DeviceService.getAll({brandId, typeId, limit, page, search})
       return res.json(devices)
     } catch (e) {
       next(ApiError.badRequest(e.message))
@@ -124,12 +45,7 @@ class DeviceController {
   async getOne(req, res, next) {
     const {id} = req.params
     try {
-      const device = await Device.findOne(
-        {
-          where: {id},
-          include: [{model: DeviceInfo, as: 'info'}]
-        }
-      )
+      const device = await DeviceService.getOne({id})
       return res.json(device)
     } catch (e) {
       next(ApiError.badRequest(e.message))
@@ -142,12 +58,7 @@ class DeviceController {
       return next(ApiError.badRequest('no name in request'))
     }
     try {
-      const device = await Device.findOne(
-        {
-          where: {name: name},
-          include: [{model: DeviceInfo, as: 'info'}]
-        },
-      )
+      const device = await DeviceService.getOneByName({name})
       return res.json(device)
     } catch (e) {
       next(ApiError.badRequest(e.message))
@@ -155,10 +66,9 @@ class DeviceController {
   }
 
   async delete(req, res, next) {
+    const {id} = req.params;
     try {
-      const {id} = req.params;
-      await DeviceInfo.destroy({where: {deviceId: id}})
-      const device = await Device.destroy({where: {id}});
+      const device = await DeviceService.delete({id});
       return res.json(device);
     } catch (e) {
       next(ApiError.badRequest(e.message))
@@ -166,19 +76,10 @@ class DeviceController {
   }
 
   async updateRating(req, res, next) {
+    let {rating} = req.body
+    const {id} = req.params
     try {
-      let {rating} = req.body
-      console.log(rating)
-      const {id} = req.params
-      const editDevice = await Device.findOne(
-        {
-          where: {id: id},
-          include: [{model: DeviceInfo, as: 'info'}]
-        },
-      )
-      await editDevice.update({
-        rating: rating,
-      })
+      await DeviceService.updateDeviceRating({id, rating})
       return res.status(200).send();
     } catch (e) {
       next(ApiError.badRequest(e.message))

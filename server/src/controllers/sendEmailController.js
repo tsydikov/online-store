@@ -8,7 +8,7 @@ class SendEmailController {
       await MailService.sendOrder(orderDetails)
       res.status(200).json({ message: 'Email have been sent' });
     } catch (e) {
-      next(ApiError.badRequest(e.message))
+      next(ApiError.internal(e.message))
     }
   }
 }

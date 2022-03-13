@@ -1,32 +1,45 @@
-const { Brand } = require("../models/models");
-const ApiError = require("../error/ApiError");
+const ApiError = require('../error/ApiError');
+const BrandService = require('../service/brand/brand-service')
 
 class BrandController {
-  async create(req, res) {
-    const { name } = req.body;
-    const brand = await Brand.create({ name });
-    return res.json(brand);
+  async create(req, res, next) {
+    const {name} = req.body;
+    try {
+      const brand = await BrandService.create({name});
+      return res.json(brand);
+    } catch (e) {
+      next(ApiError.internal(e.message))
+    }
   }
 
-  async getAll(req, res) {
-    const brands = await Brand.findAll();
-    return res.json(brands);
+  async getAll(req, res, next) {
+    try {
+      const brands = await BrandService.getAll();
+      return res.json(brands);
+    } catch (e) {
+      next(ApiError.internal(e.message))
+    }
   }
-  async delete(req, res) {
-    const { id } = req.params;
-    const brand = await Brand.destroy({ where: { id } });
-    return res.json(brand);
+
+  async delete(req, res, next) {
+    const {id} = req.params;
+    try {
+      const brand = await BrandService.delete({id});
+      return res.json(brand);
+    } catch (e) {
+      next(ApiError.internal(e.message))
+    }
   }
-  async update(req, res) {
-    const { id } = req.params;
-    const { newName } = req.body;
-    const brand = await Brand.findOne({
-      where: { id: id },
-    });
-    await brand.update({
-      name: newName
-    })
-    return res.status(200).send();
+
+  async update(req, res, next) {
+    const {id} = req.params;
+    const {newName} = req.body;
+    try {
+      await BrandService.update({ id, newName })
+      return res.status(200).send();
+    } catch (e) {
+      next(ApiError.internal(e.message))
+    }
   }
 }
 
