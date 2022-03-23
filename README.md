@@ -1,34 +1,34 @@
 # Online Shop
-can test here: https://cryptic-stream-86757.herokuapp.com/shop
-
-Code has been deployed on heroku(modificated with S3 cloud)
-
-backend on node.js with expres.
-frontend on react.js with Mobx
-DB - PostgresQL
-JavaScript
-
-Functionality:
-Registration(using JWT auth)
-save images
-send email
-CRUD with Type, Brand, Device
-Rating for every device
-Basket for devices
-
-.env file example:
-PORT=
-DB_NAME=
-DB_USER=
-DB_PASSWORD=
-DB_HOST=
-DB_PORT=
-SECRET_KEY=
-SMTP_HOST=
-SMTP_PORT=
-SMTP_USER=
-SMTP_PASSWORD=
-MAIL_RECIPIENT=
-
-cd server && npm install && npm run dev
-cd client && npm install && npm start
+can test here: https://cryptic-stream-86757.herokuapp.com/shop<br>
+<br>
+Code has been deployed on heroku(modificated with S3 cloud)<br>
+<br>
+backend on node.js with expres.<br>
+frontend on react.js with Mobx<br>
+DB - PostgresQL<br>
+JavaScript<br>
+<br>
+Functionality:<br>
+Registration(using JWT auth)<br>
+save images<br>
+send email<br>
+CRUD with Type, Brand, Device<br>
+Rating for every device<br>
+Basket for devices<br>
+<br>
+.env file example:<br>
+PORT=<br>
+DB_NAME=<br>
+DB_USER=<br>
+DB_PASSWORD=<br>
+DB_HOST=<br>
+DB_PORT=<br>
+SECRET_KEY=<br>
+SMTP_HOST=<br>
+SMTP_PORT=<br>
+SMTP_USER=<br>
+SMTP_PASSWORD=<br>
+MAIL_RECIPIENT=<br>
+<br>
+cd server && npm install && npm run dev<br>
+cd client && npm install && npm start<br>
