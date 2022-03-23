@@ -1,5 +1,5 @@
 # Online Shop
-can test here: https://cryptic-stream-86757.herokuapp.com/shop<br>
+can test here: https://cryptic-stream-86757.herokuapp.com<br>
 <br>
 Code has been deployed on heroku(modificated with S3 cloud)<br>
 <br>
